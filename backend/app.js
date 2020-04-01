@@ -40,6 +40,7 @@ const config = {
 app.post('/patientDetail',(req,res,next)=>{
     const user_id=database.ref('/appointment').push().key
     database.ref('/patients_data').child(user_id).set({
+        pid:user_id,
         age:req.body.age,
         name:req.body.name,
         email:req.body.email,
@@ -51,14 +52,12 @@ app.post('/patientDetail',(req,res,next)=>{
 })
 app.get('/getData',(req,res,next)=>{
     const usersRef=database.ref(`schedule/01-04-2020`);
-    var docname;
     usersRef.once('value',(snap)=>{
-            snap.forEach(function(childSnapshot){
-                 docname=childSnapshot.val().doctor;
-            })
-        })
-        res.send(docname)
-       
+           snap.forEach(function(childSnapshot){
+            const det=childSnapshot.val()
+            res.send(det)
+           })
+    })      
 })
 
 app.post('/newUser',(req,res,next)=>{
@@ -141,3 +140,6 @@ app.post('/Logout',(req,res,next)=>{
 app.listen(port,()=>{
     console.log(`Runninnnn on ${port}`)
 })
+process.on('uncaughtException', function (err) {
+    console.log(err);
+}); 
